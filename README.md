@@ -2,7 +2,7 @@
 Wayback Robots is a Python tool that extracts information from robots.txt files archived in the Wayback Machine for specified domains.
 
 ## Installation
-###Requirements
+Requirements
 - Python 3.6 or higher
 - pip (for installing dependencies)
 ##Installing Dependencies

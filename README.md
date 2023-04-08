@@ -1,4 +1,4 @@
-# Wayback Robots
+# Wayback
 Wayback Robots is a Python tool that extracts information from robots.txt files archived in the Wayback Machine for specified domains.
 
 ## Installation
@@ -8,8 +8,8 @@ Wayback Robots is a Python tool that extracts information from robots.txt files 
 ##Installing Dependencies
 Clone the repository:
 ```
-git clone https://github.com/yourusername/wayback-robots.git
-cd wayback-robots
+git clone https://github.com/elizarfish/wayback.git
+cd wayback
 ```
 
 Install the dependencies:
@@ -20,7 +20,7 @@ pip install -r requirements.txt
 ## Usage
 To use the tool, follow these steps:
 
-1) Run the wayback_robots.py script:
+1) Run the wayback.py script:
 ```
 python wayback.py
 ```

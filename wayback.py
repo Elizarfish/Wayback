@@ -2,10 +2,11 @@ import json
 import re
 import requests
 import sys
+import argparse
 from concurrent.futures import ThreadPoolExecutor
 from queue import Queue
 
-def fetch_robots_txt(domain):
+def fetch_robots_txt(domain, output_file):
     url = f"http://web.archive.org/cdx/search/cdx?url={domain}/robots.txt&output=json"
     response = requests.get(url)
     
@@ -14,6 +15,7 @@ def fetch_robots_txt(domain):
         return
 
     records = response.json()
+    unique_paths = set()
 
     if len(records) >= 1:
         for record in records[1:]:
@@ -27,22 +29,32 @@ def fetch_robots_txt(domain):
                 path_matches = path_pattern.findall(body)
 
                 for path in path_matches:
-                    print(path)
+                    unique_paths.add(path)
 
-def worker(domain_queue):
+    with open(output_file, "a") as f:
+        for path in unique_paths:
+            f.write(f"{domain} {path}\n")
+
+def worker(domain_queue, output_file):
     while not domain_queue.empty():
         domain = domain_queue.get()
-        fetch_robots_txt(domain)
+        fetch_robots_txt(domain, output_file)
 
 def main():
+    parser = argparse.ArgumentParser(description="Wayback Machine robots.txt fetcher")
+    parser.add_argument("-f", "--file", required=True, help="Input file containing domain list")
+    parser.add_argument("-o", "--output", required=True, help="Output file to save results")
+    args = parser.parse_args()
+
     domain_queue = Queue()
 
-    for line in sys.stdin:
-        domain_queue.put(line.strip())
+    with open(args.file, "r") as f:
+        for line in f:
+            domain_queue.put(line.strip())
 
     with ThreadPoolExecutor(max_workers=20) as executor:
         for _ in range(20):
-            executor.submit(worker, domain_queue)
+            executor.submit(worker, domain_queue, args.output)
 
 if __name__ == "__main__":
     main()
